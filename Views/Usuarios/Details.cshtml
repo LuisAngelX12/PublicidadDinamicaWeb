@@ -1,0 +1,58 @@
+﻿@model PublicidadDinamicaWeb.Models.Usuario
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-4">Detalles del Usuario</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="card bg-dark text-white shadow p-4"
+         style="width:450px; min-width:320px;">
+
+        <p><strong>Nombre:</strong> @Model.Nombre</p>
+        <p><strong>Correo:</strong> @Model.Correo</p>
+        <p><strong>Fecha Registro:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")</p>
+        <p>
+            <strong>Estado:</strong>
+            @if (Model.Estado)
+            {
+                <span class="badge bg-success">Activo</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Inactivo</span>
+            }
+        </p>
+
+        <p>
+            <strong>Rol:</strong>
+            @{
+                var rol = Model.UsuarioRoles.FirstOrDefault()?.Rol?.NombreRol;
+            }
+
+            @if (!string.IsNullOrEmpty(rol))
+            {
+                <span class="badge @(rol == "Admin" ? "bg-danger" : "bg-primary")">
+                    @rol
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark">Sin rol</span>
+            }
+        </p>
+
+        <p>
+            <strong>Comercio</strong>
+            @if (ViewBag.Comercio != null)
+            {
+                @ViewBag.Comercio.NombreComercio
+            }
+            else
+            {
+                <span>No tiene comercio asociado</span>
+            }
+        </p>
+
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    </div>
+</div>

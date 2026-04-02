@@ -1,0 +1,119 @@
+﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Comercio>
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-3">Comercios</h2>
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-success" asp-action="Create">Nuevo Comercio</a>
+
+    <div class="d-flex gap-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar comercio..." />
+        <select id="filterEstado" class="form-select">
+            <option value="">Todos</option>
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-dark table-hover shadow" id="comerciosTable">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Fecha Registro</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string estadoText = item.Estado ? "Activo" : "Inactivo";
+            string badgeClass = item.Estado ? "bg-success" : "bg-secondary";
+
+            <tr data-estado="@estadoText.ToLower()">
+
+                <td class="text-center">
+                    @{
+                        var rutaImagen = !string.IsNullOrEmpty(item.Logo)
+                        ? Url.Content("~/images/comercios/" + item.Logo)
+                        : Url.Content("~/images/comercios/placeholder.jpg");
+                    }
+
+                    <img src="@rutaImagen"
+                         alt="@item.NombreComercio"
+                         style="width:70px; height:70px; object-fit:cover; cursor:pointer; border-radius:4px;"
+                         onclick="abrirImagenModal('@rutaImagen', '@item.NombreComercio')" />
+                </td>
+
+                <td>@item.IdUsuario</td>
+                <td>@item.NombreComercio</td>
+                <td><span class="badge @badgeClass">@estadoText</span></td>
+                <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.IdComercio">Editar</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.IdComercio">Detalles</a>
+
+                    <form asp-action="Delete" asp-route-id="@item.IdComercio" method="post" class="d-inline"
+                          onsubmit="return confirm('¿Estás seguro que quieres borrar este comercio?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal para mostrar el logo grande -->
+<div class="modal fade" id="imagenModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagenModalLabel">Imagen del Comercio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imagenGrande" src="" alt="Comercio" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterEstado');
+        const table = document.getElementById('comerciosTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const filter = filterSelect.value.toLowerCase();
+
+            rows.forEach(row => {
+                const nombre = row.cells[2].textContent.toLowerCase();
+                const estado = row.dataset.estado;
+
+                const matchesSearch = nombre.includes(searchText);
+                const matchesFilter = !filter || estado === filter;
+
+                row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        filterSelect.addEventListener('change', filterTable);
+
+        function abrirImagenModal(ruta, nombre) {
+            document.getElementById('imagenGrande').src = ruta;
+            document.getElementById('imagenModalLabel').innerText = nombre;
+
+            var modal = new bootstrap.Modal(document.getElementById('imagenModal'));
+            modal.show();
+        }
+
+    </script>
+}

@@ -1,0 +1,182 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<h2 class="mb-3">Crear Producto</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+        <!-- HEADER -->
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Registro de Producto</h5>
+            <small class="text-muted">
+                Publicidad dinámica
+            </small>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <!-- Comercio -->
+                    <div class="col-md-6">
+                        <label asp-for="IdComercio" class="form-label"></label>
+                        <select asp-for="IdComercio" asp-items="ViewBag.Comercios" class="form-select">
+                            <option value="">Seleccione un comercio</option>
+                        </select>
+                        <span asp-validation-for="IdComercio" class="text-danger"></span>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div class="col-md-6">
+                        <label asp-for="IdCategoria" class="form-label"></label>
+                        <select asp-for="IdCategoria" asp-items="ViewBag.Categorias" class="form-select">
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                        <span asp-validation-for="IdCategoria" class="text-danger"></span>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-12">
+                        <label asp-for="NombreProducto" class="form-label"></label>
+                        <input asp-for="NombreProducto" class="form-control" />
+                        <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="col-md-12">
+                        <label asp-for="Descripcion" class="form-label"></label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="col-md-6">
+                        <label asp-for="PrecioActual" class="form-label"></label>
+                        <input asp-for="PrecioActual" type="text" class="form-control" id="PrecioActualInputCreate" />
+                        <span id="PrecioErrorCreate" class="text-danger" style="display:none;"></span>
+                    </div>
+
+                    <!-- Imagen -->
+                    <div class="col-md-6">
+                        <label class="form-label">Imagen del producto</label>
+                        <input type="file" name="imagenFile" id="imagenFileCreate" class="form-control" accept="image/*" />
+                        <small class="text-muted">JPG / PNG</small>
+
+                        <div class="mt-2 d-flex align-items-center">
+                            <img id="previewCreate" src="" alt="Vista previa" class="img-thumbnail"
+                                 style="max-width:120px; max-height:120px; display:none;" data-original="" />
+                            <small id="previewLabelCreate" class="text-muted ms-2" style="display:none;"></small>
+                            <button type="button" id="removeImageBtnCreate" class="btn btn-sm btn-danger ms-2" style="display:none;">Quitar</button>
+                        </div>
+
+                        <input type="hidden" name="EliminarImagen" id="EliminarImagenCreate" value="false" />
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="col-md-12 form-check form-switch mt-2">
+                        <input class="form-check-input" asp-for="Estado" />
+                        <label class="form-check-label">Producto activo</label>
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-success px-4">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        // Validación jQuery: aceptar coma como decimal
+        (function () {
+            if (window.jQuery && jQuery.validator && jQuery.validator.methods) {
+                var originalNumber = jQuery.validator.methods.number;
+                jQuery.validator.methods.number = function (value, element) {
+                    if (typeof value === "string") value = value.replace(',', '.');
+                    return originalNumber.call(this, value, element);
+                };
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Imagen ---
+            var input = document.getElementById('imagenFileCreate');
+            var preview = document.getElementById('previewCreate');
+            var previewLabel = document.getElementById('previewLabelCreate');
+            var removeBtn = document.getElementById('removeImageBtnCreate');
+            var eliminarCampo = document.getElementById('EliminarImagenCreate');
+
+            if (input) {
+                input.addEventListener('change', function () {
+                    var file = input.files && input.files[0];
+                    eliminarCampo.value = "false";
+                    if (!file) {
+                        preview.style.display = 'none';
+                        previewLabel.style.display = 'none';
+                        removeBtn.style.display = 'none';
+                        return;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        previewLabel.textContent = 'Vista previa (nuevo)';
+                        previewLabel.style.display = 'block';
+                        removeBtn.style.display = 'inline-block';
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function () {
+                    preview.style.display = 'none';
+                    previewLabel.style.display = 'none';
+                    input.value = '';
+                    eliminarCampo.value = "true";
+                    removeBtn.style.display = 'none';
+                });
+            }
+
+            // --- Precio ---
+            var form = document.querySelector('form[asp-action="Create"]') || document.querySelector('form');
+            var precioInput = document.getElementById('PrecioActualInputCreate');
+            var errorSpan = document.getElementById('PrecioErrorCreate');
+
+            if (form && precioInput && errorSpan) {
+                form.addEventListener('submit', function (e) {
+                    // Limpiar mensaje
+                    errorSpan.style.display = 'none';
+                    errorSpan.textContent = '';
+
+                    // Quitar puntos de miles
+                    var valor = precioInput.value.replace(/\./g, '');
+                    // Reemplazar coma por punto
+                    var valorParse = valor.replace(',', '.');
+
+                    if (isNaN(valorParse) || valorParse.trim() === '') {
+                        e.preventDefault();
+                        errorSpan.textContent = "Ingrese un número válido para el precio";
+                        errorSpan.style.display = 'block';
+                        precioInput.focus();
+                        return false;
+                    }
+
+                    // Sobrescribir input con valor limpio
+                    precioInput.value = valor;
+                });
+            }
+        });
+    </script>
+}

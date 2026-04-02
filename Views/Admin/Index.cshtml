@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Panel Administrador";
+    Layout = "_Layout";
+}
+
+<div style="height:40px;"></div>
+
+<style>
+    body {
+        background-color: #121212;
+    }
+
+    .admin-title {
+        color: #ffffff;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .admin-card {
+        border-radius: 18px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #1e1e1e;
+        border: 1px solid rgba(255,255,255,0.05);
+        backdrop-filter: blur(6px);
+    }
+
+        .admin-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 1px solid rgba(13,110,253,0.5);
+        }
+
+        .admin-card h4 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .admin-card p {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+    .admin-icon {
+        font-size: 2.2rem;
+        color: #0d6efd;
+        transition: 0.3s;
+    }
+
+    .admin-card:hover .admin-icon {
+        transform: scale(1.15);
+        color: #4dabf7;
+    }
+
+    .card-body {
+        padding: 2rem 1.5rem;
+    }
+</style>
+
+<div class="container py-5">
+
+    <h2 class="mb-5 text-center admin-title">
+        <i class="bi bi-speedometer2 me-2"></i>
+        Panel de Administración
+    </h2>
+
+    <div class="row g-4">
+
+        <!-- HISTORIAL -->
+        <div class="col-md-4">
+            <a asp-controller="HistorialPrecios"
+               asp-action="PorProducto"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-graph-up-arrow admin-icon"></i>
+                        <h4>Historial</h4>
+                        <p>Ver historial de precios de los productos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- USUARIOS -->
+        <div class="col-md-4">
+            <a asp-controller="Usuarios"
+               asp-action="Index"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill admin-icon"></i>
+                        <h4>Usuarios</h4>
+                        <p>Administrar usuarios del sistema</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- ANUNCIOS -->
+        <div class="col-md-4">
+            <a asp-controller="Anuncios"
+               asp-action="Index"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-megaphone-fill admin-icon"></i>
+                        <h4>Anuncios</h4>
+                        <p>Gestionar promociones y anuncios</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- COMERCIOS -->
+        <div class="col-md-4">
+            <a asp-controller="Comercios"
+               asp-action="Index"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-shop admin-icon"></i>
+                        <h4>Comercios</h4>
+                        <p>Administrar comercios registrados</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- PRODUCTOS -->
+        <div class="col-md-4">
+            <a asp-controller="Productos"
+               asp-action="Index"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-box-seam admin-icon"></i>
+                        <h4>Productos</h4>
+                        <p>Gestionar productos y precios</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- CATEGORÍAS -->
+        <div class="col-md-4">
+            <a asp-controller="Categorias"
+               asp-action="Index"
+               class="text-decoration-none">
+                <div class="card admin-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-tags-fill admin-icon"></i>
+                        <h4>Categorías</h4>
+                        <p>Administrar categorías de productos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>

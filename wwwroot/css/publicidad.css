@@ -1,0 +1,324 @@
+﻿/* RESET */
+body {
+    margin: 0;
+    background: #0f1115;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* SLIDER */
+.slider {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* SLIDE */
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 1.2s ease;
+}
+
+    /* ACTIVO */
+    .slide.active {
+        opacity: 1;
+        z-index: 1;
+    }
+
+/* WRAPPER INTERNO */
+.contenido {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1.2s ease, opacity 1.2s ease;
+}
+
+/* CONTENEDOR INTERNO */
+.contenido {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* IMAGEN */
+.imagen {
+    width: 600px; /* tamaño fijo real */
+    height: 600px;
+    object-fit: contain;
+}
+
+/* ===============================
+   TIPOS DE ANIMACIÓN
+================================ */
+
+/* FADE */
+.slide.anim-fade .contenido {
+    opacity: 0;
+}
+
+.slide.anim-fade.active .contenido {
+    opacity: 1;
+}
+
+/* ZOOM */
+.slide.anim-zoom .contenido {
+    transform: scale(1.15);
+}
+
+.slide.anim-zoom.active .contenido {
+    transform: scale(1);
+}
+
+/* SLIDE */
+.slide.anim-slide .contenido {
+    transform: translateX(80px);
+}
+
+.slide.anim-slide.active .contenido {
+    transform: translateX(0);
+}
+
+/* IMAGEN */
+.imagen {
+    max-width: 50%;
+    max-height: 70%;
+    object-fit: contain;
+    margin-right: 60px;
+}
+
+/* TEXTOS */
+.info {
+    color: white;
+    text-align: left;
+}
+
+    .info h1 {
+        font-size: 5.5rem;
+        margin-bottom: 25px;
+    }
+
+.precio {
+    font-size: 6.5rem;
+    font-weight: 900;
+    margin: 20px 0;
+}
+
+.anterior {
+    font-size: 2rem;
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+.variacion {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+/* ===============================
+   ANIMACIONES PRECIO
+================================ */
+
+.slide.active .precio {
+    animation: entradaPrecio 1s ease forwards;
+}
+
+.slide.active[data-variacion="up"] .precio {
+    animation: entradaPrecio 1s ease forwards, pulso 1s ease 1s;
+}
+
+.slide.active[data-variacion="down"] .precio {
+    animation: entradaPrecio 1s ease forwards, pulso 1s ease 1s;
+}
+
+/* ===============================
+   FLECHAS
+================================ */
+
+.flecha {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+    animation: pulso 1.5s ease-in-out infinite;
+}
+
+    .flecha.up::before {
+        content: "↑ Subió";
+    }
+
+    .flecha.down::before {
+        content: "↓ Bajó";
+    }
+
+/* ===============================
+   CONTRASTE AUTOMÁTICO TITULO
+================================ */
+
+.fondo-claro .info h1 {
+    color: #111111;
+}
+
+.fondo-oscuro .info h1 {
+    color: #ffffff;
+}
+
+/* Mejora visual */
+.info {
+    transform: translateY(-20px);
+}
+
+.info h1 {
+    text-shadow: 0 0 15px rgba(0,0,0,0.4);
+    transition: color 0.4s ease;
+}
+
+.fondo-claro .slider::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 0;
+}
+
+.fondo-oscuro .slider::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 0;
+}
+
+/* ===============================
+   ANIMACIÓN PROMOCIÓN
+================================ */
+
+.fondo-claro .promo h2,
+.fondo-claro .promo p {
+    color: #111111;
+}
+
+.fondo-oscuro .promo h2,
+.fondo-oscuro .promo p {
+    color: #111111;
+}
+
+.promo {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px 25px;
+    width: 500px;
+    height: 119px;
+    border-radius: 15px;
+    background: rgba(255, 225, 0, 0.75);
+    box-shadow: 0 8px 32px rgba(25, 135, 84, 0.2);
+    border: 1px solid rgba(25, 135, 84, 0.4);
+    animation: entradaPromo 1s ease forwards;
+}
+
+    .promo h2 {
+        font-size: 2.5rem;
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .promo p {
+        font-size: 1.8rem;
+        margin-top: 8px;
+        opacity: 0.9;
+    }
+
+@keyframes entradaPromo {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===============================
+   HEADER DEL SLIDE
+================================ */
+.fondo-claro .categoria,
+.fondo-claro .comercio span {
+    color: #111111;
+}
+
+.fondo-oscuro .categoria,
+.fondo-oscuro .comercio span {
+    color: #ffffff;
+}
+
+.header-slide {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.categoria {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.comercio {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+}
+
+.comercio span {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+/* ===============================
+   KEYFRAMES
+================================ */
+
+@keyframes entradaPrecio {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulso {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

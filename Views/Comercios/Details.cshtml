@@ -1,0 +1,95 @@
+﻿@model PublicidadDinamicaWeb.Models.Comercio
+
+@{
+    ViewData["Title"] = "Detalles Comercio";
+}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4" style="width: 450px;">
+        <div class="text-center mb-4">
+            <h3 class="mb-1">Detalles del Comercio</h3>
+            <small class="text-muted">Información completa</small>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Logo))
+        {
+            <div class="text-center mb-4">
+                @{
+                    var rutaImagen = Url.Content("~/images/comercios/" + Model.Logo);
+                }
+
+                <img src="@rutaImagen"
+                     alt="@Model.NombreComercio"
+                     class="img-thumbnail shadow"
+                     style="width:150px; height:150px; object-fit:cover; border-radius:10px; cursor:pointer;"
+                     onclick="abrirImagenModal('@rutaImagen', '@Model.NombreComercio')" />
+            </div>
+        }
+        else
+        {
+            <div class="text-center mb-4">
+                <img src="~/images/comercios/placeholder.jpg"
+                     class="img-thumbnail shadow"
+                     style="width:150px; height:150px; object-fit:cover; border-radius:10px;" />
+            </div>
+        }
+
+        <dl class="row mb-4">
+            <dt class="col-sm-4">Usuario</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.IdUsuario)</dd>
+
+            <dt class="col-sm-4">Comercio</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreComercio)</dd>
+
+            <dt class="col-sm-4">Descripción</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">
+                @if (Model.Estado)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactivo</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Fecha de Registro</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.FechaRegistro)</dd>
+        </dl>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Edit" asp-route-id="@Model?.IdComercio" class="btn btn-primary px-4">Editar</a>
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">Volver</a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Logo -->
+<div class="modal fade" id="imagenModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagenModalLabel">Imagen del Comercio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imagenGrande" src="" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function abrirImagenModal(ruta, nombre) {
+            document.getElementById('imagenGrande').src = ruta;
+            document.getElementById('imagenModalLabel').innerText = nombre;
+
+            var modal = new bootstrap.Modal(document.getElementById('imagenModal'));
+            modal.show();
+        }
+    </script>
+}

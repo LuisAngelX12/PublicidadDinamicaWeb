@@ -1,0 +1,52 @@
+﻿@model PublicidadDinamicaWeb.Models.Anuncio
+
+@{
+    ViewData["Title"] = "Detalles del Anuncio";
+}
+
+<h2 class="mb-3">Detalles del Anuncio</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Información del Anuncio</h5>
+        </div>
+
+        <div class="card-body">
+            <dl class="row">
+
+                <dt class="col-sm-4">Producto</dt>
+                <dd class="col-sm-8">@Model.Producto?.NombreProducto</dd>
+
+                <dt class="col-sm-4">Título</dt>
+                <dd class="col-sm-8">@Model.Titulo</dd>
+
+                <dt class="col-sm-4">Texto Promocional</dt>
+                <dd class="col-sm-8">@Model.TextoPromocional</dd>
+
+                <dt class="col-sm-4">Fecha Inicio</dt>
+                <dd class="col-sm-8">@(Model.FechaInicio?.ToShortDateString() ?? "No definida")
+
+                <dt class="col-sm-4">Fecha Fin</dt>
+                <dd class="col-sm-8">@(Model.FechaFin?.ToShortDateString() ?? "No definida")</dd>
+
+                <dt class="col-sm-4">Estado</dt>
+                <dd class="col-sm-8">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </dd>
+
+            </dl>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-secondary">
+                    Volver
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.IdAnuncio"
+                   class="btn btn-primary">
+                    Editar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

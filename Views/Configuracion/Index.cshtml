@@ -1,0 +1,204 @@
+﻿@model ConfiguracionPublicidad
+
+@{
+    ViewData["Title"] = "Configuración de Publicidad";
+}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-sliders"></i> Configuración de Publicidad
+        </h2>
+        <p class="text-muted">
+            Personalizá el comportamiento y la apariencia de la pantalla publicitaria.
+        </p>
+    </div>
+
+    <form asp-controller="Configuracion" asp-action="Index" method="post" class="row g-4" enctype="multipart/form-data">
+
+        @Html.HiddenFor(m => m.IdConfiguracion)
+
+        <!-- =========================
+             APARIENCIA
+        ========================== -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="bi bi-palette-fill text-primary me-2"></i>
+                        Apariencia
+                    </h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de fondo</label>
+                        <select asp-for="TipoFondo" class="form-select">
+                            <option value="color">Color sólido</option>
+                            <option value="imagen">Imagen</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color de fondo</label>
+                        <input asp-for="ColorFondo" type="color" class="form-control form-control-color" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Imagen de fondo</label>
+
+                        <!-- Mostrar el archivo cargado desde la base de datos (si existe) -->
+                        @if (!string.IsNullOrEmpty(Model.ImagenFondo))
+                        {
+                            <div class="mt-2 text-muted">
+                                <strong>Archivo cargado (BD):</strong> @Model.ImagenFondo
+                            </div>
+                            <input type="hidden" name="ImagenFondo" value="@Model.ImagenFondo" />
+
+                            <!-- Enviar el nombre del archivo cargado en caso de que no se seleccione un nuevo archivo -->
+                        }
+
+                        <!-- Input para seleccionar un nuevo archivo -->
+                        <input asp-for="ImagenFondo" type="file" class="form-control" accept="image/*" onchange="validateFileExtension()" />
+
+                        <!-- Muestra el nombre del archivo seleccionado -->
+                        <div id="selectedFile" class="mt-2 text-muted" style="display:none;">
+                            <strong>Archivo seleccionado:</strong> <span id="fileName"></span>
+                        </div>
+
+                        <small class="text-muted">
+                            Se buscará en <code>/images/fondos</code>
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             COMPORTAMIENTO
+        ========================== -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="bi bi-clock-history text-primary me-2"></i>
+                        Comportamiento
+                    </h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tiempo por slide (s)</label>
+                        <input asp-for="TiempoPorSlideSeg"
+                               type="number"
+                               min="1"
+                               step="1"
+                               class="form-control"
+                               placeholder="Ej: 8 segundos" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Duración animación (s)</label>
+                        <input asp-for="DuracionAnimacionSeg"
+                               type="number"
+                               min="0.3"
+                               step="0.1"
+                               class="form-control"
+                               placeholder="Ej: 1,2 segundos" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de animación</label>
+                        <select asp-for="TipoAnimacion" class="form-select" id="tipoAnimacionSelect">
+                            <option value="fade">Fade</option>
+                            <option value="zoom">Zoom</option>
+                            <option value="slide">Slide</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             VARIACIONES DE PRECIO
+        ========================== -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+                        Variaciones de Precio
+                    </h5>
+
+                    <div class="form-check form-switch mb-2">
+                        <input asp-for="MostrarSubio" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">
+                            Mostrar “Subió”
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-2">
+                        <input asp-for="MostrarBajo" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">
+                            Mostrar “Bajó”
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input asp-for="MostrarPrecioAnterior" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">
+                            Mostrar precio anterior
+                        </label>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Color precio actual y anterior</label>
+                        <input asp-for="ColorPrecioNormal" type="color"
+                               class="form-control form-control-color" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Color cuando sube</label>
+                        <input asp-for="ColorPrecioSubio" type="color"
+                               class="form-control form-control-color" />
+                    </div>
+
+                    <div>
+                        <label class="form-label">Color cuando baja</label>
+                        <input asp-for="ColorPrecioBajo" type="color"
+                               class="form-control form-control-color" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             ESTADO
+        ========================== -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="bi bi-toggle-on text-primary me-2"></i>
+                        Estado
+                    </h5>
+
+                    <div class="form-check form-switch">
+                        <input asp-for="Activo" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label">
+                            Configuración activa
+                        </label>
+                    </div>
+
+                    <hr />
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-save me-1"></i>
+                        Guardar cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>

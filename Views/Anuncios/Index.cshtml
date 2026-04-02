@@ -1,0 +1,123 @@
+﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Anuncio>
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-3">Anuncios</h2>
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-success" asp-action="Create">Nuevo Anuncio</a>
+
+    <div class="d-flex gap-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar anuncio..." />
+        <select id="filterEstado" class="form-select">
+            <option value="">Todos</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="vigente">Vigente</option>
+            <option value="vencido">Vencido</option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-dark table-hover shadow" id="anunciosTable">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Título</th>
+            <th>Texto Promocional</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Estado</th>
+            <th>Vigencia</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var hoy = DateTime.Now;
+
+            string estadoTexto = item.Estado ? "Activo" : "Inactivo";
+            string estadoBadge = item.Estado ? "bg-success" : "bg-secondary";
+
+            string vigencia = "Sin fecha";
+            string vigenciaBadge = "bg-secondary";
+
+            if (item.FechaInicio != null && item.FechaFin != null)
+            {
+                if (item.FechaFin < hoy)
+                {
+                    vigencia = "Vencido";
+                    vigenciaBadge = "bg-danger";
+                }
+                else if (item.FechaInicio <= hoy && item.FechaFin >= hoy)
+                {
+                    vigencia = "Vigente";
+                    vigenciaBadge = "bg-success";
+                }
+                else
+                {
+                    vigencia = "Programado";
+                    vigenciaBadge = "bg-warning text-dark";
+                }
+            }
+
+            <tr data-estado="@estadoTexto.ToLower()" data-vigencia="@vigencia.ToLower()">
+                <td>@item.Producto?.NombreProducto</td>
+                <td>@item.Titulo</td>
+                <td>@item.TextoPromocional</td>
+                <td>@item.FechaInicio?.ToString("dd/MM/yyyy")</td>
+                <td>@item.FechaFin?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <span class="badge @estadoBadge">@estadoTexto</span>
+                </td>
+                <td>
+                    <span class="badge @vigenciaBadge">@vigencia</span>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.IdAnuncio">Editar</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.IdAnuncio">Detalles</a>
+
+                    <form asp-action="Delete" asp-route-id="@item.IdAnuncio"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('¿Seguro que deseas eliminar este anuncio?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterEstado');
+        const table = document.getElementById('anunciosTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const filter = filterSelect.value.toLowerCase();
+
+            rows.forEach(row => {
+                const titulo = row.cells[1].textContent.toLowerCase();
+                const texto = row.cells[2].textContent.toLowerCase();
+                const estado = row.dataset.estado;
+                const vigencia = row.dataset.vigencia;
+
+                const matchesSearch = titulo.includes(searchText) || texto.includes(searchText);
+                const matchesFilter =
+                    !filter ||
+                    estado === filter ||
+                    vigencia === filter;
+
+                row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        filterSelect.addEventListener('change', filterTable);
+    </script>
+}

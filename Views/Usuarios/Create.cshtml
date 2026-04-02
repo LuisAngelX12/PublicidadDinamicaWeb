@@ -1,0 +1,38 @@
+﻿@model PublicidadDinamicaWeb.Models.Usuario
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-4">Crear Usuario</h2>
+
+<div class="d-flex justify-content-center">
+    <div class="card bg-dark text-white shadow p-4"
+         style="width:450px; min-width:320px;">
+        <form asp-action="Create">
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" autocomplete="off" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label"></label>
+                <input asp-for="Correo" class="form-control" autocomplete="off" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Contrasena" class="form-label"></label>
+                <input asp-for="Contrasena"
+                       type="password"
+                       class="form-control"
+                       autocomplete="new-password" />
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="Estado" class="form-check-input" />
+                <label asp-for="Estado" class="form-check-label">Activo</label>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>

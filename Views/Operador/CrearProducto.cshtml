@@ -1,0 +1,122 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<h2 class="mb-3">Crear Producto</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Registro de Producto</h5>
+            <small class="text-muted">Panel Operador</small>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="CrearProducto" asp-controller="Operador" enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-12">
+                        <label asp-for="NombreProducto" class="form-label"></label>
+                        <input asp-for="NombreProducto" class="form-control" />
+                        <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Descripcion" class="form-label"></label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="PrecioActual" class="form-label"></label>
+                        <input asp-for="PrecioActual" type="text" class="form-control" id="PrecioActualInputOperador" />
+                        <span id="PrecioErrorOperador" class="text-danger" style="display:none;"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="IdCategoria" class="form-label"></label>
+                        <select asp-for="IdCategoria"
+                                class="form-select"
+                                asp-items="ViewBag.Categorias"></select>
+                    </div>
+
+                    <div class="col-md-12 form-check form-switch mt-2">
+                        <input class="form-check-input" asp-for="Estado" />
+                        <label class="form-check-label">Activo</label>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Imagen</label>
+                        <input type="file" name="imagenFile" class="form-control" />
+                    </div>
+
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" asp-controller="Operador"
+                       class="btn btn-secondary">
+                        Volver
+                    </a>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        Guardar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        // Validación jQuery: aceptar coma como decimal
+        (function () {
+            if (window.jQuery && jQuery.validator && jQuery.validator.methods) {
+                var originalNumber = jQuery.validator.methods.number;
+                jQuery.validator.methods.number = function (value, element) {
+                    if (typeof value === "string") value = value.replace(',', '.');
+                    return originalNumber.call(this, value, element);
+                };
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.querySelector('form[asp-action="CrearProducto"]') || document.querySelector('form');
+            var precioInput = document.getElementById('PrecioActualInputOperador');
+            var errorSpan = document.getElementById('PrecioErrorOperador');
+
+            if (form && precioInput && errorSpan) {
+                form.addEventListener('submit', function (e) {
+                    // Limpiar mensaje de error
+                    errorSpan.style.display = 'none';
+                    errorSpan.textContent = '';
+
+                    // Quitar puntos de miles
+                    var valor = precioInput.value.replace(/\./g, '');
+                    // Reemplazar coma por punto
+                    var valorParse = valor.replace(',', '.');
+
+                    // Validar que sea un número
+                    if (isNaN(valorParse) || valorParse.trim() === '') {
+                        e.preventDefault(); // detener envío
+                        errorSpan.textContent = "Ingrese un número válido para el precio";
+                        errorSpan.style.display = 'block';
+                        precioInput.focus();
+                        return false;
+                    }
+
+                    // Sobrescribir input con valor limpio
+                    precioInput.value = valor;
+                });
+            }
+        });
+    </script>
+}

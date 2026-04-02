@@ -1,0 +1,89 @@
+﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Usuario>
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-3">Usuarios</h2>
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-success" asp-action="Create">Nuevo Usuario</a>
+
+    <div class="d-flex gap-2">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar usuario..." />
+        <select id="filterEstado" class="form-select">
+            <option value="">Todos</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+        </select>
+    </div>
+</div>
+
+<table class="table table-dark table-hover shadow" id="usuariosTable">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Fecha Registro</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            string estadoTexto = item.Estado ? "Activo" : "Inactivo";
+            string estadoBadge = item.Estado ? "bg-success" : "bg-secondary";
+
+            <tr data-estado="@estadoTexto.ToLower()">
+                <td>@item.Nombre</td>
+                <td>@item.Correo</td>
+                <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <span class="badge @estadoBadge">@estadoTexto</span>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.IdUsuario">Estado</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.IdUsuario">Detalles</a>
+
+                    <form asp-action="Delete" asp-route-id="@item.IdUsuario"
+                          method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const filterSelect = document.getElementById('filterEstado');
+        const table = document.getElementById('usuariosTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase();
+            const filter = filterSelect.value.toLowerCase();
+
+            rows.forEach(row => {
+                const nombre = row.cells[0].textContent.toLowerCase();
+                const correo = row.cells[1].textContent.toLowerCase();
+                const estado = row.dataset.estado;
+
+                const matchesSearch =
+                    nombre.includes(searchText) ||
+                    correo.includes(searchText);
+
+                const matchesFilter =
+                    !filter || estado === filter;
+
+                row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        filterSelect.addEventListener('change', filterTable);
+    </script>
+}

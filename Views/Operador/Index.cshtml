@@ -1,0 +1,215 @@
+﻿@model PublicidadDinamicaWeb.Models.Comercio
+
+@{
+    ViewData["Title"] = "Mi Comercio";
+}
+
+<style>
+    body {
+        background-color: #121212;
+    }
+
+    #panelComercio {
+        background-color: #1e1e1e;
+        color: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .logo-comercio {
+        height: 70px;
+        object-fit: contain;
+        margin-bottom: 15px;
+    }
+
+    .card {
+        border-radius: 15px;
+        background-color: #1e1e1e;
+        color: #f8f9fa;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card-title {
+        font-weight: 600;
+    }
+
+    .form-control, .form-select {
+        background-color: #1e1e1e;
+        color: #fff;
+        border: 1px solid #444;
+    }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #1e1e1e;
+            color: #fff;
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+</style>
+
+<h2 class="mb-4 text-light">Mi Comercio</h2>
+
+<!-- PANEL COMERCIO -->
+<div id="panelComercio">
+    <img src="@Url.Content($"~/images/comercios/{(!string.IsNullOrEmpty(Model.Logo) ? Model.Logo : "placeholder.jpg")}")"
+         class="logo-comercio"
+         alt="@Model.NombreComercio" />
+
+    <h4>@Model.NombreComercio</h4>
+    <p>@Model.Descripcion</p>
+
+    <a class="btn btn-primary me-2"
+       href="@Url.Action("EditarComercio", "Operador")">
+        Editar Comercio
+    </a>
+
+    <a class="btn btn-success"
+       href="@Url.Action("CrearProducto", "Operador")">
+        Agregar Producto
+    </a>
+</div>
+
+<hr class="border-secondary" />
+
+<!-- FILTRO INTELIGENTE -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <input type="text" id="buscadorProductos"
+               class="form-control"
+               placeholder="Buscar producto...">
+    </div>
+
+    <div class="col-md-3">
+        <select id="filtroEstado" class="form-select">
+            <option value="todos">Todos</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+        </select>
+    </div>
+</div>
+
+<h5 class="text-light mb-3">Mis Productos</h5>
+
+<div class="row" id="contenedorProductos">
+    @if (Model.Productos != null && Model.Productos.Any())
+    {
+        foreach (var producto in Model.Productos)
+        {
+            <div class="col-md-3 mb-4 producto-item"
+                 data-nombre="@producto.NombreProducto.ToLower()"
+                 data-descripcion="@producto.Descripcion.ToLower()"
+                 data-estado="@(producto.Estado ? "activo" : "inactivo")">
+
+                <div class="card h-100">
+                    <img src="@Url.Content($"~/images/productos/{(!string.IsNullOrEmpty(producto.Imagen) ? producto.Imagen : "placeholder.jpg")}")"
+                         class="card-img-top"
+                         alt="@producto.NombreProducto" />
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@producto.NombreProducto</h5>
+                        <p class="card-text">@producto.Descripcion</p>
+
+                        <p class="text-success fw-bold">
+                            $@producto.PrecioActual.ToString("N2", new System.Globalization.CultureInfo("es-ES"))
+                        </p>
+
+                        <span class="badge @(producto.Estado ? "bg-success" : "bg-secondary") px-3 py-2 rounded-pill mb-3">
+                            @(producto.Estado ? "Activo" : "Inactivo")
+                        </span>
+
+                        <div class="mt-auto">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <a class="btn btn-primary w-100"
+                                       href="@Url.Action("EditarProducto", "Operador", new { id = producto.IdProducto })">
+                                        Editar
+                                    </a>
+                                </div>
+
+                                <div class="col-6">
+                                    <button class="btn btn-danger w-100 btn-eliminar"
+                                            data-id="@producto.IdProducto"
+                                            data-nombre="@producto.NombreProducto">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-light">Aún no tienes productos registrados.</p>
+    }
+</div>
+
+<script>
+    // ===============================
+    // FILTRO INTELIGENTE
+    // ===============================
+    const buscador = document.getElementById("buscadorProductos");
+    const filtroEstado = document.getElementById("filtroEstado");
+    const productos = document.querySelectorAll(".producto-item");
+
+    function filtrarProductos() {
+        const texto = buscador.value.toLowerCase();
+        const estado = filtroEstado.value;
+
+        productos.forEach(p => {
+            const nombre = p.dataset.nombre;
+            const descripcion = p.dataset.descripcion;
+            const estadoProducto = p.dataset.estado;
+
+            const coincideTexto =
+                nombre.includes(texto) ||
+                descripcion.includes(texto);
+
+            const coincideEstado =
+                estado === "todos" || estado === estadoProducto;
+
+            p.style.display = (coincideTexto && coincideEstado) ? "block" : "none";
+        });
+    }
+
+    buscador.addEventListener("keyup", filtrarProductos);
+    filtroEstado.addEventListener("change", filtrarProductos);
+
+
+    // ===============================
+    // CONFIRMAR ELIMINACIÓN NATIVA
+    // ===============================
+    document.querySelectorAll(".btn-eliminar").forEach(btn => {
+        btn.addEventListener("click", function () {
+
+            const id = this.dataset.id;
+            const nombre = this.dataset.nombre;
+
+            const confirmar = confirm(`¿Estás seguro que deseas eliminar el producto "${nombre}"?`);
+
+            if (confirmar) {
+                window.location.href = `/Operador/EliminarProducto/${id}`;
+            }
+        });
+    });
+</script>

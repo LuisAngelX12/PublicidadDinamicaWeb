@@ -1,0 +1,50 @@
+﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Categoria>
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-4 text-center">Categorías</h2>
+
+<div class="d-flex justify-content-center mb-3 gap-3" style="flex-wrap: wrap;">
+    <a class="btn btn-success" asp-action="Create">Nueva Categoría</a>
+    <input type="text" id="searchInput" class="form-control" placeholder="Buscar categoría..." style="max-width:300px;" />
+</div>
+
+<div class="d-flex justify-content-center">
+    <table class="table table-dark table-hover shadow" style="width:500px; min-width:350px;" id="categoriasTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th style="width:180px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NombreCategoria</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.IdCategoria">Editar</a>
+                        <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.IdCategoria">Detalles</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const table = document.getElementById('categoriasTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        searchInput.addEventListener('input', function() {
+            const searchText = searchInput.value.toLowerCase();
+
+            rows.forEach(row => {
+                const nombre = row.cells[0].textContent.toLowerCase();
+                row.style.display = nombre.includes(searchText) ? '' : 'none';
+            });
+        });
+    </script>
+}

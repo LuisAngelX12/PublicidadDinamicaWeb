@@ -1,0 +1,56 @@
+﻿@model PublicidadDinamicaWeb.Models.Anuncio
+
+@{
+    ViewData["Title"] = "Eliminar Anuncio";
+}
+
+<h2 class="mb-3 text-danger">Eliminar Anuncio</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Confirmar Eliminación</h5>
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-danger fw-bold">
+                ¿Estás seguro de que deseas eliminar este anuncio?
+            </p>
+
+            <dl class="row">
+
+                <dt class="col-sm-4">Producto</dt>
+                <dd class="col-sm-8">@Model.Producto?.NombreProducto</dd>
+
+                <dt class="col-sm-4">Título</dt>
+                <dd class="col-sm-8">@Model.Titulo</dd>
+
+                <dt class="col-sm-4">Texto Promocional</dt>
+                <dd class="col-sm-8">@Model.TextoPromocional</dd>
+
+                <dt class="col-sm-4">Fecha Inicio</dt>
+                <dd class="col-sm-8">@(Model.FechaInicio?.ToShortDateString() ?? "No definida")</dd>
+
+                <dt class="col-sm-4">Fecha Fin</dt>
+                <dd class="col-sm-8">@(Model.FechaFin?.ToShortDateString() ?? "No definida")</dd>
+
+            </dl>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="IdAnuncio" />
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        Eliminar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

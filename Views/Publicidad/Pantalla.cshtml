@@ -1,0 +1,264 @@
+﻿@model PublicidadDinamicaWeb.Models.PublicidadViewModel
+
+@{
+    Layout = null;
+    var c = Model.Configuracion;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Publicidad</title>
+
+    <link rel="stylesheet" href="~/css/publicidad.css" />
+
+    <style>
+        :root {
+            --color-precio-normal: @(string.IsNullOrEmpty(c.ColorPrecioNormal) ? "#ffffff" : c.ColorPrecioNormal);
+            --color-precio-subio: @(string.IsNullOrEmpty(c.ColorPrecioSubio) ? "#ff0000" : c.ColorPrecioSubio);
+            --color-precio-bajo: @(string.IsNullOrEmpty(c.ColorPrecioBajo) ? "#00ff00" : c.ColorPrecioBajo);
+        }
+
+        .precio {
+            color: var(--color-precio-normal);
+        }
+
+        .anterior {
+            color: var(--color-precio-normal);
+        }
+
+        .flecha.up {
+            color: var(--color-precio-subio);
+        }
+
+        .flecha.down {
+            color: var(--color-precio-bajo);
+        }
+
+        /* Mensaje cuando no hay productos */
+        .sin-productos {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #000; /* fallback */
+            color: #fff;
+        }
+
+            .sin-productos h1 {
+                font-size: 3rem;
+                margin-bottom: 10px;
+            }
+
+            .sin-productos p {
+                font-size: 1.2rem;
+                opacity: 0.8;
+            }
+
+        .fondo-claro .sin-productos {
+            color: #000;
+        }
+
+        .fondo-oscuro .sin-productos {
+            color: #fff;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    @if (Model.Productos != null && Model.Productos.Any())
+    {
+        <div class="slider">
+
+            @foreach (var p in Model.Productos)
+            {
+                var anuncio = p.Anuncios.FirstOrDefault();
+
+                var ultimo = p.HistorialPrecios
+                .OrderByDescending(h => h.FechaCambio)
+                .FirstOrDefault();
+
+                var variacion =
+                ultimo == null ? "none" :
+                ultimo.PrecioNuevo > ultimo.PrecioAnterior ? "up" :
+                ultimo.PrecioNuevo < ultimo.PrecioAnterior ? "down" :
+                                "same";
+
+                <div class="slide anim-@c.TipoAnimacion" data-variacion="@variacion">
+                    <div class="contenido">
+
+                        <div class="header-slide">
+
+                            <div class="categoria">
+                                @(p.Categoria?.NombreCategoria ?? "Sin categoría")
+                            </div>
+
+                            <div class="comercio">
+                                @{
+                                    var logoRuta = !string.IsNullOrEmpty(p.Comercio?.Logo)
+                                    ? Url.Content("~/images/comercios/" + p.Comercio.Logo)
+                                    : Url.Content("~/images/comercios/placeholder.jpg");
+                                }
+
+                                <span>@(p.Comercio?.NombreComercio ?? "Sin comercio")</span>
+                                <img src="@logoRuta" class="logo" />
+                            </div>
+
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(p.Imagen))
+                        {
+                            <img src="~/images/productos/@p.Imagen" class="imagen" />
+                        }
+
+                        <div class="info">
+                            <h1>@p.NombreProducto</h1>
+
+                            <div class="precio">
+                                ₡@String.Format("{0:N0}", p.PrecioActual)
+                            </div>
+
+                            @if (ultimo != null && c.MostrarPrecioAnterior)
+                            {
+                                <div class="anterior">
+                                    Antes: ₡@String.Format("{0:N0}", ultimo.PrecioAnterior)
+                                </div>
+                            }
+
+                            @if (variacion == "up" && c.MostrarSubio)
+                            {
+                                <div class="flecha up"></div>
+                            }
+                            else if (variacion == "down" && c.MostrarBajo)
+                            {
+                                <div class="flecha down"></div>
+                            }
+
+                            @if (anuncio != null)
+                            {
+                                <div class="promo">
+                                    <h2>@anuncio.Titulo</h2>
+                                    <p>@anuncio.TextoPromocional</p>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="sin-productos" id="sinProductos">
+            <h1>Pantalla en preparación</h1>
+            <p>No hay productos activos para mostrar.</p>
+        </div>
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const tipoFondo = "@c.TipoFondo";
+            const colorFondo = "@c.ColorFondo";
+            const imagenFondo = "@c.ImagenFondo";
+
+            const slider = document.querySelector(".slider");
+            const sinProductos = document.getElementById("sinProductos");
+
+            const contenedor = slider || sinProductos;
+
+            if (contenedor) {
+
+                if (tipoFondo === "color" && colorFondo) {
+
+                    contenedor.style.background = colorFondo;
+
+                    function esColorClaro(hex) {
+                        hex = hex.replace("#", "");
+                        const r = parseInt(hex.substring(0, 2), 16);
+                        const g = parseInt(hex.substring(2, 4), 16);
+                        const b = parseInt(hex.substring(4, 6), 16);
+                        const luminancia = (0.299 * r + 0.587 * g + 0.114 * b);
+                        return luminancia > 186;
+                    }
+
+                    if (esColorClaro(colorFondo)) {
+                        document.body.classList.add("fondo-claro");
+                    } else {
+                        document.body.classList.add("fondo-oscuro");
+                    }
+                }
+                else if (tipoFondo === "imagen" && imagenFondo) {
+
+                    const ruta = `/images/fondos/${imagenFondo}`;
+
+                    contenedor.style.background = `url('${ruta}') no-repeat center center`;
+                    contenedor.style.backgroundSize = "cover";
+
+                    detectarLuminosidadImagen(ruta);
+                }
+            }
+        });
+
+        function detectarLuminosidadImagen(src) {
+
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+
+            img.onload = function () {
+
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                canvas.width = 100;
+                canvas.height = 100;
+
+                ctx.drawImage(img, 0, 0, 100, 100);
+
+                const data = ctx.getImageData(0, 0, 100, 100).data;
+
+                let r = 0, g = 0, b = 0;
+                const totalPixeles = data.length / 4;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    r += data[i];
+                    g += data[i + 1];
+                    b += data[i + 2];
+                }
+
+                r /= totalPixeles;
+                g /= totalPixeles;
+                b /= totalPixeles;
+
+                const luminancia = (0.299 * r + 0.587 * g + 0.114 * b);
+
+                if (luminancia > 178) {
+                    document.body.classList.add("fondo-claro");
+                } else {
+                    document.body.classList.add("fondo-oscuro");
+                }
+            };
+
+            img.src = src;
+        }
+
+        window.configPublicidad = {
+            tiempoPorSlide: "@c.TiempoPorSlideMs"
+        };
+
+        setInterval(() => {
+            location.reload();
+        }, 1800000);
+    </script>
+
+    <script src="~/js/publicidad.js"></script>
+
+</body>
+</html>

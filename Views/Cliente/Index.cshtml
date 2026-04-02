@@ -1,0 +1,27 @@
+﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Comercio>
+
+@{
+    ViewData["Title"] = "Comercios";
+}
+
+<div style="height:30px;"></div>
+
+<h2 class="mb-4">Nuestros Comercios</h2>
+
+<div class="row">
+    @foreach (var comercio in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-img-container" style="height:100px; background-color:#ffffff;">
+                    <img src="@comercio.Logo" alt="@comercio.NombreComercio" />
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@comercio.NombreComercio</h5>
+                    <p class="card-text flex-grow-1">@comercio.Descripcion</p>
+                    <a href="@Url.Action("DetallesComercio", "Cliente", new { id = comercio.IdComercio })" class="btn btn-primary mt-auto">Ver Productos</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

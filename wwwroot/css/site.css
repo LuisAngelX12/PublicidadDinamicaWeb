@@ -1,0 +1,164 @@
+/* ===============================
+   GLOBAL
+=============================== */
+
+body {
+    background-color: #121212;
+    color: #eaeaea;
+}
+
+h2, h4 {
+    font-weight: 600;
+}
+
+/* ===============================
+   NAVBAR
+=============================== */
+
+.navbar-brand {
+    font-size: 1.2rem;
+}
+
+/* ===============================
+   LOGIN
+=============================== */
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    color: white;
+}
+
+/* ===============================
+   TABLES
+=============================== */
+
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table th {
+        background-color: #1f1f1f;
+    }
+
+/* ===============================
+   BUTTONS
+=============================== */
+
+.btn {
+    border-radius: 8px;
+}
+
+/* ===============================
+   CARDS
+=============================== */
+
+.card {
+    background-color: #1e1e1e;
+    color: white;
+    border-radius: 12px;
+}
+
+/* ===============================
+   BADGES
+=============================== */
+
+.badge {
+    font-size: 0.85rem;
+}
+
+/* ===============================
+   LAYOUT: Sticky footer / evitar solapamiento
+   - Hace que el <body> sea un contenedor flex en columna.
+   - El footer se empuja hacia abajo con `margin-top: auto`.
+   - `main[role="main"]` puede crecer para ocupar el espacio disponible.
+   Añadido aquí para que _Layout use el archivo CSS.
+=============================== */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* El contenedor principal (.container) mantiene su comportamiento.
+   Hacemos que el elemento main ocupe espacio flexible dentro del body. */
+main[role="main"] {
+    flex: 1 0 auto;
+}
+
+/* Forzar que el footer vaya al final si hay poco contenido.
+   Se usa !important en la posición para proteger frente a otras hojas que fijen footer. */
+footer.footer {
+    margin-top: auto;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+}
+
+/* ===============================
+    Imagen Productos Index
+=============================== */
+
+.img-producto {
+    width: 50px; /* tamaño inicial */
+    height: auto;
+    transition: transform 0.2s; /* animación suave */
+    cursor: pointer;
+}
+
+.img-producto:hover {
+    transform: scale(3); /* aumenta 3 veces al pasar el cursor */
+    z-index: 100; /* para que esté sobre otros elementos */
+    position: relative;
+}
+
+/* ===============================
+   Cards de Productos y Comercios
+=============================== */
+
+/* Contenedor con fondo para imágenes */
+.card-img-container {
+    width: 100%;
+    height: 200px; /* Ajustable */
+    background-color: #f8f9fa; /* Fondo profesional */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+    /* Imagen dentro del contenedor */
+    .card-img-container img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+/* Imagen grande en DetallesProducto */
+.img-detalle-producto {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Logo del comercio en detalle */
+.logo-comercio {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 10px;
+}

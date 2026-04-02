@@ -1,0 +1,48 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+
+@{
+    ViewData["Title"] = "Eliminar Producto";
+}
+
+<h2 class="mb-3 text-danger">Eliminar Producto</h2>
+
+<div class="card shadow mb-3 border-danger">
+    <div class="card-body">
+        <p class="text-warning fw-bold">
+            ⚠️ ¿Estás seguro de que deseas eliminar este producto?
+        </p>
+
+        <table class="table table-dark table-hover mb-0">
+            <tbody>
+                <tr>
+                    <th style="width:200px">Comercio</th>
+                    <td>@Model.IdComercio</td>
+                </tr>
+                <tr>
+                    <th>Categoría</th>
+                    <td>@Model.IdCategoria</td>
+                </tr>
+                <tr>
+                    <th>Nombre</th>
+                    <td>@Model.NombreProducto</td>
+                </tr>
+                <tr>
+                    <th>Precio</th>
+                    <td>₡@Model.PrecioActual</td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>@Model.Estado</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="IdProducto" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

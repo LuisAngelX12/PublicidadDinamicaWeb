@@ -1,0 +1,57 @@
+﻿@model PublicidadDinamicaWeb.Models.Comercio
+
+@{
+    ViewData["Title"] = "Eliminar Comercio";
+}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4" style="width: 450px;">
+        <div class="text-center mb-4">
+            <h3 class="mb-1 text-danger">Eliminar Comercio</h3>
+            <small class="text-muted">¿Está seguro que desea eliminar este comercio?</small>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Logo))
+        {
+            <div class="text-center mb-4">
+                <img src="~/images/comercios/@Model.Logo"
+                     class="img-thumbnail"
+                     style="width:120px; height:120px; object-fit:cover;" />
+            </div>
+        }
+
+        <dl class="row mb-4">
+            <dt class="col-sm-4">Usuario</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.IdUsuario)</dd>
+
+            <dt class="col-sm-4">Nombre del Comercio</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.NombreComercio)</dd>
+
+            <dt class="col-sm-4">Descripción</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Descripcion)</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">
+                @if (Model.Estado)
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactivo</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Fecha de Registro</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.FechaRegistro)</dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="IdComercio" />
+            <div class="d-flex justify-content-between">
+                <input type="submit" value="Eliminar" class="btn btn-danger px-4" />
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>

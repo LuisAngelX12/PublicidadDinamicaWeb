@@ -1,0 +1,15 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+
+<h3>¿Desea eliminar este producto?</h3>
+
+<div class="card p-3">
+    <strong>@Model.NombreProducto</strong>
+    <p>@Model.Descripcion</p>
+    <p>₡ @Model.PrecioActual</p>
+</div>
+
+<form asp-action="EliminarProducto" method="post">
+    <input type="hidden" asp-for="IdProducto" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

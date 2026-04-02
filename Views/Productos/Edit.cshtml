@@ -1,0 +1,223 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<h2 class="mb-3">Editar Producto</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+        <!-- HEADER -->
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Edición de Producto</h5>
+            <small class="text-muted">
+                Publicidad dinámica
+            </small>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="IdProducto" />
+
+                <div class="row g-3">
+                    <!-- Comercio -->
+                    <div class="col-md-6">
+                        <label asp-for="IdComercio" class="form-label"></label>
+                        <select asp-for="IdComercio" asp-items="ViewBag.Comercios" class="form-select">
+                            <option value="">Seleccione un comercio</option>
+                        </select>
+                        <span asp-validation-for="IdComercio" class="text-danger"></span>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div class="col-md-6">
+                        <label asp-for="IdCategoria" class="form-label"></label>
+                        <select asp-for="IdCategoria" asp-items="ViewBag.Categorias" class="form-select">
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                        <span asp-validation-for="IdCategoria" class="text-danger"></span>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-12">
+                        <label asp-for="NombreProducto" class="form-label"></label>
+                        <input asp-for="NombreProducto" class="form-control" />
+                        <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="col-md-12">
+                        <label asp-for="Descripcion" class="form-label"></label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+
+                    <!-- Precio -->
+                    <div class="col-md-6">
+                        <label asp-for="PrecioActual" class="form-label"></label>
+                        <input asp-for="PrecioActual" type="text" class="form-control"
+                               id="PrecioActualInput" />
+                        <span id="PrecioError" class="text-danger" style="display:none;"></span>
+                    </div>
+
+                    <!-- Imagen -->
+                    <div class="col-md-6">
+                        <label class="form-label">Imagen del producto</label>
+                        <input type="file" name="imagenFile" id="imagenFileEdit" class="form-control" accept="image/*" />
+                        <small class="text-muted">JPG / PNG (opcional)</small>
+
+                        <!-- Previsualización de la imagen -->
+                        <div class="mt-2 d-flex align-items-center">
+                            <img id="previewEdit"
+                                 src="@(string.IsNullOrEmpty(Model?.Imagen) ? "" : Url.Content($"~/images/productos/{Model.Imagen}"))"
+                                 alt="Vista previa"
+                                 class="img-thumbnail"
+                                 style="max-width:120px; max-height:120px; display:@(string.IsNullOrEmpty(Model?.Imagen) ? "none" : "block");"
+                                 data-original="@(string.IsNullOrEmpty(Model?.Imagen) ? "" : Url.Content($"~/images/productos/{Model.Imagen}"))" />
+                            <small id="previewLabelEdit" class="text-muted ms-2" style="display:@(string.IsNullOrEmpty(Model?.Imagen) ? "none" : "block");">
+                                @(string.IsNullOrEmpty(Model?.Imagen) ? "" : "Imagen actual")
+                            </small>
+
+                            <button type="button" id="removeImageBtn" class="btn btn-sm btn-danger ms-2"
+                                    style="display:@(string.IsNullOrEmpty(Model?.Imagen) ? "none" : "inline-block");">
+                                Quitar
+                            </button>
+                        </div>
+
+                        <!-- Campo oculto para eliminar imagen -->
+                        <input type="hidden" name="EliminarImagen" id="EliminarImagen" value="false" />
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="col-md-12 form-check form-switch mt-2">
+                        <input class="form-check-input" asp-for="Estado" />
+                        <label class="form-check-label">
+                            Producto activo
+                        </label>
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-success px-4">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        // Aceptar coma como separador decimal en la validación cliente (jQuery Validate)
+        (function () {
+            if (window.jQuery && jQuery.validator && jQuery.validator.methods) {
+                var originalNumber = jQuery.validator.methods.number;
+                jQuery.validator.methods.number = function (value, element) {
+                    if (typeof value === "string") {
+                        value = value.replace(',', '.');
+                    }
+                    return originalNumber.call(this, value, element);
+                };
+            }
+        })();
+
+        // Previsualización y botón quitar imagen
+        document.addEventListener('DOMContentLoaded', function () {
+            var input = document.getElementById('imagenFileEdit');
+            var preview = document.getElementById('previewEdit');
+            var previewLabel = document.getElementById('previewLabelEdit');
+            var removeBtn = document.getElementById('removeImageBtn');
+            var eliminarCampo = document.getElementById('EliminarImagen');
+
+            // Guardar imagen original
+            if (preview && preview.dataset) {
+                preview.dataset.original = preview.dataset.original || preview.src || "";
+            }
+
+            // Cambio de archivo
+            if (input) {
+                input.addEventListener('change', function () {
+                    var file = input.files && input.files[0];
+                    eliminarCampo.value = "false"; // al cambiar archivo, no eliminar
+                    if (!file) {
+                        // Restaurar imagen original
+                        if (preview && preview.dataset && preview.dataset.original) {
+                            preview.src = preview.dataset.original;
+                            preview.style.display = preview.dataset.original ? 'block' : 'none';
+                            if (previewLabel) previewLabel.textContent = preview.dataset.original ? 'Imagen actual' : '';
+                            if (previewLabel) previewLabel.style.display = preview.dataset.original ? 'block' : 'none';
+                            if (removeBtn) removeBtn.style.display = preview.dataset.original ? 'inline-block' : 'none';
+                        } else {
+                            if (preview) preview.style.display = 'none';
+                            if (previewLabel) previewLabel.style.display = 'none';
+                            if (removeBtn) removeBtn.style.display = 'none';
+                        }
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }
+                        if (previewLabel) {
+                            previewLabel.textContent = 'Vista previa (nuevo)';
+                            previewLabel.style.display = 'block';
+                        }
+                        if (removeBtn) removeBtn.style.display = 'inline-block';
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Botón quitar imagen
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function () {
+                    if (preview) preview.style.display = 'none';
+                    if (previewLabel) previewLabel.style.display = 'none';
+                    if (input) input.value = '';
+                    eliminarCampo.value = "true"; // marcar para eliminar imagen
+                    removeBtn.style.display = 'none';
+                });
+            }
+
+            var form = document.querySelector("form");
+            var precioInput = document.getElementById("PrecioActualInput");
+            var errorSpan = document.getElementById("PrecioError");
+
+            if (form && precioInput && errorSpan) {
+                form.addEventListener("submit", function (e) {
+                    // Limpiar el mensaje de error
+                    errorSpan.style.display = "none";
+                    errorSpan.textContent = "";
+
+                    // Quitar puntos de miles
+                    var valor = precioInput.value.replace(/\./g, '');
+
+                    // Reemplazar coma decimal por punto para parsear
+                    var valorParse = valor.replace(',', '.');
+
+                    // Validar que sea un número
+                    if (isNaN(valorParse) || valorParse.trim() === '') {
+                        e.preventDefault(); // detener envío
+                        errorSpan.textContent = "Ingrese un número válido para el precio";
+                        errorSpan.style.display = "block";
+                        precioInput.focus();
+                        return false;
+                    }
+
+                    // Sobrescribir input con valor limpio
+                    precioInput.value = valor;
+                });
+            }
+        });
+    </script>
+}

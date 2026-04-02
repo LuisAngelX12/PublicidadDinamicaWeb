@@ -1,0 +1,110 @@
+﻿@model PublicidadDinamicaWeb.Models.Producto
+
+@{
+    ViewData["Title"] = Model.NombreProducto;
+}
+
+<div style="height:30px;"></div>
+
+<style>
+    /* Contenedor principal de detalle */
+    .detalle-producto-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* Columna Imagen */
+    .detalle-producto-img {
+        flex: 1 1 400px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); /* degradado suave */
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1); /* sombra más marcada */
+        transition: all 0.3s;
+    }
+
+        .detalle-producto-img:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .detalle-producto-img img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+    /* Columna de info */
+    .detalle-producto-info {
+        flex: 1 1 400px;
+        background-color: #343a40; /* gris oscuro elegante */
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        color: #f8f9fa; /* texto casi blanco */
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+        /* Logo del comercio */
+        .detalle-producto-info .logo-comercio {
+            height: 60px;
+            width: auto;
+            margin-bottom: 15px;
+        }
+
+        /* Nombre del producto */
+        .detalle-producto-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        /* Precio destacado */
+        .detalle-producto-info .precio {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #28a745; /* verde resalta sobre fondo oscuro */
+            margin-bottom: 20px;
+        }
+
+        /* Botones */
+        .detalle-producto-info .btn {
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+            .detalle-producto-info .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+</style>
+
+
+<div class="detalle-producto-container">
+
+    <!-- Columna Imagen -->
+    <div class="detalle-producto-img">
+        <img src="@ViewBag.ImagenProducto" alt="@Model.NombreProducto" />
+    </div>
+
+    <!-- Columna Información -->
+    <div class="detalle-producto-info">
+        <img src="@ViewBag.LogoComercio" alt="@Model.Comercio.NombreComercio" class="logo-comercio" />
+        <h2>@Model.NombreProducto</h2>
+        <p><strong>Comercio:</strong> @Model.Comercio.NombreComercio</p>
+        <p><strong>Categoría:</strong> @Model.Categoria.NombreCategoria</p>
+        <p>@Model.Descripcion</p>
+        <p class="precio">$@Model.PrecioActual.ToString("N2")</p>
+        <a href="@Url.Action("DetallesComercio", "Cliente", new { id = Model.IdComercio })" class="btn btn-secondary">Volver al Comercio</a>
+    </div>
+
+</div>

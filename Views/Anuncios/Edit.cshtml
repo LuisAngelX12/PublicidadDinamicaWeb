@@ -1,0 +1,84 @@
+﻿@model PublicidadDinamicaWeb.Models.Anuncio
+
+@{
+    ViewData["Title"] = "Editar Anuncio";
+}
+
+<h2 class="mb-3">Editar Anuncio</h2>
+
+<div class="d-flex justify-content-center" style="margin-top:30px;">
+    <div class="card shadow-lg border-0" style="width:700px; max-width:100%;">
+
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Modificar Anuncio</h5>
+            <small class="text-muted">Publicidad dinámica</small>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="IdAnuncio" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-12">
+                        <label asp-for="IdProducto" class="form-label"></label>
+                        <select asp-for="IdProducto"
+                                asp-items="ViewBag.IdProducto"
+                                class="form-select">
+                        </select>
+                        <span asp-validation-for="IdProducto" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Titulo" class="form-label"></label>
+                        <input asp-for="Titulo" class="form-control" />
+                        <span asp-validation-for="Titulo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="TextoPromocional" class="form-label"></label>
+                        <textarea asp-for="TextoPromocional"
+                                  class="form-control"
+                                  rows="3"></textarea>
+                        <span asp-validation-for="TextoPromocional" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FechaInicio" class="form-label"></label>
+                        <input asp-for="FechaInicio" type="date" class="form-control" />
+                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="FechaFin" class="form-label"></label>
+                        <input asp-for="FechaFin" type="date" class="form-control" />
+                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 form-check form-switch mt-2">
+                        <input class="form-check-input" asp-for="Estado" />
+                        <label class="form-check-label">
+                            Anuncio activo
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        Guardar Cambios
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
