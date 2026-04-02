@@ -173,6 +173,19 @@
                 });
             }
 
+            // 🔹 HISTORIAL DE PRECIOS
+            if (precioAnterior != producto.PrecioActual)
+            {
+                _context.HistorialPrecios.Add(new HistorialPrecio
+                {
+                    IdProducto = productoDb.IdProducto,
+                    Producto = productoDb,
+                    PrecioAnterior = precioAnterior,
+                    PrecioNuevo = producto.PrecioActual,
+                    FechaCambio = DateTime.Now
+                });
+            }
+
             // 🔹 IMAGEN
             if (EliminarImagen)
             {

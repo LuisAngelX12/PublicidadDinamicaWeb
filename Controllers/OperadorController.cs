@@ -187,27 +187,12 @@ namespace PublicidadDinamicaWeb.Controllers
 
             if (productoDb == null) return NotFound();
 
-            var precioAnterior = productoDb.PrecioActual;
-
             // Actualizar campos
             productoDb.NombreProducto = producto.NombreProducto;
             productoDb.Descripcion = producto.Descripcion;
             productoDb.PrecioActual = producto.PrecioActual;
             productoDb.IdCategoria = producto.IdCategoria;
             productoDb.Estado = producto.Estado;
-
-            // HISTORIAL DE PRECIOS
-            if (precioAnterior != producto.PrecioActual)
-            {
-                _context.HistorialPrecios.Add(new HistorialPrecio
-                {
-                    IdProducto = productoDb.IdProducto,
-                    Producto = productoDb,
-                    PrecioAnterior = precioAnterior,
-                    PrecioNuevo = producto.PrecioActual,
-                    FechaCambio = DateTime.Now
-                });
-            }
 
             // Imagen
             if (EliminarImagen && !string.IsNullOrEmpty(productoDb.Imagen))
