@@ -18,7 +18,7 @@
 
         public bool Estado { get; set; } = true;
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
         public required ICollection<UsuarioRol> UsuarioRoles { get; set; }
     }

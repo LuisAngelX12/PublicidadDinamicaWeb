@@ -11,13 +11,13 @@
         public int IdComercio { get; set; }
 
         [ForeignKey(nameof(IdComercio))]
-        public Comercio Comercio { get; set; }
+        public Comercio? Comercio { get; set; }
 
         [Display(Name = "Categoria")]
         public int IdCategoria { get; set; }
 
         [ForeignKey(nameof(IdCategoria))]
-        public Categoria Categoria { get; set; }
+        public Categoria? Categoria { get; set; }
 
         [Required(ErrorMessage = "El nombre del producto es obligatorio")]
         [Display(Name = "Nombre del producto")]

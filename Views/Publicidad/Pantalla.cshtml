@@ -15,9 +15,9 @@
 
     <style>
         :root {
-            --color-precio-normal: @(string.IsNullOrEmpty(c.ColorPrecioNormal) ? "#ffffff" : c.ColorPrecioNormal);
-            --color-precio-subio: @(string.IsNullOrEmpty(c.ColorPrecioSubio) ? "#ff0000" : c.ColorPrecioSubio);
-            --color-precio-bajo: @(string.IsNullOrEmpty(c.ColorPrecioBajo) ? "#00ff00" : c.ColorPrecioBajo);
+            --color-precio-normal: @(string.IsNullOrEmpty(c!.ColorPrecioNormal) ? "#ffffff" : c!.ColorPrecioNormal);
+            --color-precio-subio: @(string.IsNullOrEmpty(c!.ColorPrecioSubio) ? "#ff0000" : c!.ColorPrecioSubio);
+            --color-precio-bajo: @(string.IsNullOrEmpty(c!.ColorPrecioBajo) ? "#00ff00" : c!.ColorPrecioBajo);
         }
 
         .precio {
@@ -89,7 +89,7 @@
                 ultimo.PrecioNuevo < ultimo.PrecioAnterior ? "down" :
                                 "same";
 
-                <div class="slide anim-@c.TipoAnimacion" data-variacion="@variacion">
+                <div class="slide anim-@c!.TipoAnimacion" data-variacion="@variacion">
                     <div class="contenido">
 
                         <div class="header-slide">
@@ -165,9 +165,9 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
-            const tipoFondo = "@c.TipoFondo";
-            const colorFondo = "@c.ColorFondo";
-            const imagenFondo = "@c.ImagenFondo";
+            const tipoFondo = "@c!.TipoFondo";
+            const colorFondo = "@c!.ColorFondo";
+            const imagenFondo = "@c!.ImagenFondo";
 
             const slider = document.querySelector(".slider");
             const sinProductos = document.getElementById("sinProductos");

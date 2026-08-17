@@ -34,5 +34,38 @@
                 .WithMany(r => r.UsuarioRoles)
                 .HasForeignKey(ur => ur.IdRol);
         }
+
+        public override int SaveChanges()
+        {
+            ConvertirFechasUtc();
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ConvertirFechasUtc();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ConvertirFechasUtc()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                foreach (var property in entry.Properties)
+                {
+                    if (property.CurrentValue is DateTime dt)
+                    {
+                        if (dt.Kind == DateTimeKind.Local)
+                        {
+                            property.CurrentValue = dt.ToUniversalTime();
+                        }
+                        else if (dt.Kind == DateTimeKind.Unspecified)
+                        {
+                            property.CurrentValue = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

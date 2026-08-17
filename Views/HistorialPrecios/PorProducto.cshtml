@@ -1,4 +1,5 @@
-﻿@model IEnumerable<HistorialPrecio>
+﻿@using PublicidadDinamicaWeb.Helpers
+@model IEnumerable<HistorialPrecio>
 
 <div style="height:30px;"></div>
 
@@ -35,7 +36,7 @@
                         <span class="badge bg-secondary">Igual</span>
                     }
                 </td>
-                <td>@h.FechaCambio.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@FechaHelper.FormatoCR(h.FechaCambio)
             </tr>
         }
     </tbody>

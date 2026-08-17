@@ -166,7 +166,7 @@
                 Correo = correo,
                 Estado = true,
                 Contrasena = _passwordHasher.HashPassword(null!, contrasena),
-                FechaRegistro = DateTime.Now,
+                FechaRegistro = DateTime.UtcNow,
                 UsuarioRoles = new List<UsuarioRol>()
             };
 

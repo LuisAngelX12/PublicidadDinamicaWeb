@@ -169,7 +169,7 @@ namespace PublicidadDinamicaWeb.Controllers
             if (id == null) return NotFound();
 
             var producto = await _context.Productos
-                .FirstOrDefaultAsync(p => p.IdProducto == id && p.Comercio.IdUsuario == UsuarioId);
+                .FirstOrDefaultAsync(p => p.IdProducto == id && p.Comercio!.IdUsuario == UsuarioId);
 
             if (producto == null) return NotFound();
 
@@ -183,7 +183,7 @@ namespace PublicidadDinamicaWeb.Controllers
         {
             var productoDb = await _context.Productos
                 .Include(p => p.Comercio)
-                .FirstOrDefaultAsync(p => p.IdProducto == producto.IdProducto && p.Comercio.IdUsuario == UsuarioId);
+                .FirstOrDefaultAsync(p => p.IdProducto == producto.IdProducto && p.Comercio!.IdUsuario == UsuarioId);
 
             if (productoDb == null) return NotFound();
 
@@ -222,7 +222,7 @@ namespace PublicidadDinamicaWeb.Controllers
         {
             var producto = await _context.Productos
                 .Include(p => p.Comercio)
-                .FirstOrDefaultAsync(p => p.IdProducto == id && p.Comercio.IdUsuario == UsuarioId);
+                .FirstOrDefaultAsync(p => p.IdProducto == id && p.Comercio!.IdUsuario == UsuarioId);
 
             if (producto == null) return NotFound();
 

@@ -98,12 +98,12 @@
 
     <!-- Columna Información -->
     <div class="detalle-producto-info">
-        <img src="@ViewBag.LogoComercio" alt="@Model.Comercio.NombreComercio" class="logo-comercio" />
+        <img src="@ViewBag.LogoComercio" alt="@Model.Comercio!.NombreComercio" class="logo-comercio" />
         <h2>@Model.NombreProducto</h2>
-        <p><strong>Comercio:</strong> @Model.Comercio.NombreComercio</p>
-        <p><strong>Categoría:</strong> @Model.Categoria.NombreCategoria</p>
+        <p><strong>Comercio:</strong> @Model.Comercio!.NombreComercio</p>
+        <p><strong>Categoría:</strong> @Model.Categoria!.NombreCategoria</p>
         <p>@Model.Descripcion</p>
-        <p class="precio">$@Model.PrecioActual.ToString("N2")</p>
+        <p class="precio">$@Model.PrecioActual!.ToString("N2")</p>
         <a href="@Url.Action("DetallesComercio", "Cliente", new { id = Model.IdComercio })" class="btn btn-secondary">Volver al Comercio</a>
     </div>
 

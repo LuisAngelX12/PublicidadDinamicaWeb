@@ -11,7 +11,7 @@ namespace PublicidadDinamicaWeb.Models
         public int? IdComercio { get; set; }
 
         [ForeignKey(nameof(IdComercio))]
-        public Comercio Comercio { get; set; }
+        public Comercio? Comercio { get; set; }
 
         /* FONDO */
         public string TipoFondo { get; set; } = "color"; // color | imagen | gradiente

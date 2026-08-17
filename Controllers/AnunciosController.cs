@@ -61,6 +61,8 @@ namespace PublicidadDinamicaWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ConvertirFechasUtc(anuncio);
+
                 _context.Add(anuncio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -102,6 +104,8 @@ namespace PublicidadDinamicaWeb.Controllers
             {
                 try
                 {
+                    ConvertirFechasUtc(anuncio);
+
                     _context.Update(anuncio);
                     await _context.SaveChangesAsync();
                 }
@@ -118,6 +122,7 @@ namespace PublicidadDinamicaWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["IdProducto"] = new SelectList(_context.Productos, "IdProducto", "NombreProducto", anuncio.IdProducto);
             return View(anuncio);
         }
@@ -154,6 +159,23 @@ namespace PublicidadDinamicaWeb.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private void ConvertirFechasUtc(Anuncio anuncio)
+        {
+            if (anuncio.FechaInicio.HasValue)
+            {
+                anuncio.FechaInicio = DateTime.SpecifyKind(
+                    anuncio.FechaInicio.Value,
+                    DateTimeKind.Utc);
+            }
+
+            if (anuncio.FechaFin.HasValue)
+            {
+                anuncio.FechaFin = DateTime.SpecifyKind(
+                    anuncio.FechaFin.Value,
+                    DateTimeKind.Utc);
+            }
         }
 
         private bool AnuncioExists(int id)

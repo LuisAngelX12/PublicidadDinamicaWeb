@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Usuario>
+﻿@using PublicidadDinamicaWeb.Helpers
+@model IEnumerable<PublicidadDinamicaWeb.Models.Usuario>
 
 <div style="height:30px;"></div>
 
@@ -36,7 +37,7 @@
             <tr data-estado="@estadoTexto.ToLower()">
                 <td>@item.Nombre</td>
                 <td>@item.Correo</td>
-                <td>@item.FechaRegistro.ToString("dd/MM/yyyy")</td>
+                <td>@FechaHelper.SoloFechaCR(item.FechaRegistro)</td>
                 <td>
                     <span class="badge @estadoBadge">@estadoTexto</span>
                 </td>

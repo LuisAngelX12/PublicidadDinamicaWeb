@@ -23,11 +23,11 @@
 
         public bool Estado { get; set; } = true;
 
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
 
         public string? Logo { get; set; }
 
         public required ICollection<Producto> Productos { get; set; }
-        public ICollection<ConfiguracionPublicidad> Configuraciones { get; set; }
+        public ICollection<ConfiguracionPublicidad>? Configuraciones { get; set; }
     }
 }

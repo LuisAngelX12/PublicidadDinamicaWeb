@@ -1,22 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PublicidadDinamicaWeb.Data;
 using PublicidadDinamicaWeb.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PublicidadDinamicaWeb.Controllers
 {
     public class UsuariosController : AdminBaseController
     {
         private readonly AppDbContext _context;
+        private readonly PasswordHasher<Usuario> _passwordHasher;
 
         public UsuariosController(AppDbContext context)
         {
             _context = context;
+            _passwordHasher = new PasswordHasher<Usuario>();
         }
 
         // GET: Usuarios
@@ -71,14 +74,22 @@ namespace PublicidadDinamicaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdUsuario,Nombre,Correo,Contrasena,Estado")] Usuario usuario)
+        public async Task<IActionResult> Create(
+        [Bind("IdUsuario,Nombre,Correo,Contrasena,Estado")] Usuario usuario)
         {
             if (!ModelState.IsValid)
             {
+                usuario.Contrasena = _passwordHasher.HashPassword(
+                    usuario,
+                    usuario.Contrasena
+                );
+
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(usuario);
         }
 

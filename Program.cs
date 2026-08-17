@@ -29,18 +29,17 @@ var pantallaPassword = Environment.GetEnvironmentVariable("PANTALLA_PASSWORD");
 // CONNECTION STRING DINÁMICA
 // =========================
 var connectionString =
-    $"server={dbHost};" +
-    $"port={dbPort};" +
-    $"database={dbName};" +
-    $"user={dbUser};" +
-    $"password={dbPassword};";
+    $"Host={dbHost};" +
+    $"Port={dbPort};" +
+    $"Database={dbName};" +
+    $"Username={dbUser};" +
+    $"Password={dbPassword};";
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString,
-        ServerVersion.AutoDetect(connectionString))
+    options.UseNpgsql(connectionString)
 );
 
 builder.Services.AddSession(options =>
@@ -124,7 +123,7 @@ using (var scope = app.Services.CreateScope())
             Correo = adminEmail!,
             Contrasena = passwordHasher.HashPassword(null!, adminPassword!),
             Estado = true,
-            FechaRegistro = DateTime.Now,
+            FechaRegistro = DateTime.UtcNow,
             UsuarioRoles = new List<UsuarioRol>()
         };
 
@@ -164,7 +163,7 @@ using (var scope = app.Services.CreateScope())
             Correo = pantallaEmail!,
             Contrasena = passwordHasher.HashPassword(null!, pantallaPassword!),
             Estado = true,
-            FechaRegistro = DateTime.Now,
+            FechaRegistro = DateTime.UtcNow,
             UsuarioRoles = new List<UsuarioRol>()
         };
 
@@ -202,7 +201,7 @@ using (var scope = app.Services.CreateScope())
             NombreComercio = "Comercio Principal",
             Descripcion = "Comercio creado automáticamente para el administrador.",
             Estado = true,
-            FechaRegistro = DateTime.Now,
+            FechaRegistro = DateTime.UtcNow,
             Logo = null,
             Productos = new List<Producto>(),
             Configuraciones = new List<ConfiguracionPublicidad>()

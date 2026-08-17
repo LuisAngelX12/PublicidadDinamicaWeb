@@ -77,7 +77,7 @@ namespace PublicidadDinamicaWeb.Controllers
                 : "/images/productos/placeholder.jpg";
 
             // Ruta completa del logo del comercio
-            ViewBag.LogoComercio = producto.Comercio.Logo != null
+            ViewBag.LogoComercio = producto.Comercio!.Logo != null
                 ? $"/images/comercios/{producto.Comercio.Logo}"
                 : "/images/comercios/placeholder.jpg";
 

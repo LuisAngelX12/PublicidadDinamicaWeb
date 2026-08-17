@@ -17,7 +17,7 @@
 
         public async Task<IActionResult> Pantalla(int? comercioId)
         {
-            var hoy = DateTime.Now;
+            var hoy = DateTime.UtcNow;
 
             var query = _context.Productos
                 .Where(p => p.Estado)
@@ -31,7 +31,8 @@
                 ))
                 .AsQueryable();
 
-            // SOLO filtramos si comercioId tiene valor
+            // Si se especifica un comercio, solo mostramos sus productos.
+            // Si es null, mostramos todos los productos activos.
             if (comercioId.HasValue)
             {
                 query = query.Where(p => p.IdComercio == comercioId.Value);
@@ -39,15 +40,32 @@
 
             var productos = await query.ToListAsync();
 
-            var config = await _context.ConfiguracionPublicidad
-                .Where(c => comercioId == null || c.IdComercio == comercioId)
-                .FirstOrDefaultAsync(c => c.Activo)
-                ?? new ConfiguracionPublicidad();
+            ConfiguracionPublicidad? config;
+
+            if (comercioId.HasValue)
+            {
+                // Comercio específico:
+                // busca SOLO su propia configuración activa.
+                config = await _context.ConfiguracionPublicidad
+                    .FirstOrDefaultAsync(c =>
+                        c.IdComercio == comercioId.Value &&
+                        c.Activo);
+            }
+            else
+            {
+                // Pantalla general:
+                // busca SOLO la configuración del Admin (comercio 1).
+                // Si Admin la desactiva, config será null.
+                config = await _context.ConfiguracionPublicidad
+                    .FirstOrDefaultAsync(c =>
+                        c.IdComercio == 1 &&
+                        c.Activo);
+            }
 
             var vm = new PublicidadViewModel
             {
                 Productos = productos,
-                Configuracion = config
+                Configuracion = config ?? new ConfiguracionPublicidad()
             };
 
             return View(vm);

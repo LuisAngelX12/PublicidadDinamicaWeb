@@ -169,7 +169,7 @@
                     Producto = productoDb,
                     PrecioAnterior = precioAnterior,
                     PrecioNuevo = producto.PrecioActual,
-                    FechaCambio = DateTime.Now
+                    FechaCambio = DateTime.UtcNow
                 });
             }
 
@@ -182,7 +182,7 @@
                     Producto = productoDb,
                     PrecioAnterior = precioAnterior,
                     PrecioNuevo = producto.PrecioActual,
-                    FechaCambio = DateTime.Now
+                    FechaCambio = DateTime.UtcNow
                 });
             }
 

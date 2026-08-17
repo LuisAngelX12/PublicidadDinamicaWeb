@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PublicidadDinamicaWeb.Models.Anuncio>
+﻿@using PublicidadDinamicaWeb.Helpers
+@model IEnumerable<PublicidadDinamicaWeb.Models.Anuncio>
 
 <div style="height:30px;"></div>
 
@@ -35,7 +36,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            var hoy = DateTime.Now;
+            var hoy = DateTime.UtcNow;
 
             string estadoTexto = item.Estado ? "Activo" : "Inactivo";
             string estadoBadge = item.Estado ? "bg-success" : "bg-secondary";
@@ -66,8 +67,17 @@
                 <td>@item.Producto?.NombreProducto</td>
                 <td>@item.Titulo</td>
                 <td>@item.TextoPromocional</td>
-                <td>@item.FechaInicio?.ToString("dd/MM/yyyy")</td>
-                <td>@item.FechaFin?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @(item.FechaInicio.HasValue
+                        ? FechaHelper.SoloFechaCR(item.FechaInicio.Value)
+                        : "-")
+                </td>
+
+                <td>
+                    @(item.FechaFin.HasValue
+                        ? FechaHelper.SoloFechaCR(item.FechaFin.Value)
+                        : "-")
+                </td>
                 <td>
                     <span class="badge @estadoBadge">@estadoTexto</span>
                 </td>
